@@ -27,6 +27,14 @@ SECRET_KEY = "jtf8*2()(hke%+0b9=jbxph0et&1ck7=voh(m$useabc+mj@!c"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,6 +47,8 @@ INSTALLED_APPS = [
     # greater consistency between gunicorn and `./manage.py runserver`. See:
     # http://whitenoise.evans.io/en/stable/django.html#using-whitenoise-in-development
     'whitenoise.runserver_nostatic',
+    'rest_framework',
+    'api',
     'django.contrib.staticfiles',
 ]
 
