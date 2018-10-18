@@ -20,6 +20,6 @@ from django.http import HttpResponse
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('/$', HttpResponse("Fuck off"))
+    path('/', lambda a : HttpResponse("Fuck off"))
 
 ]
