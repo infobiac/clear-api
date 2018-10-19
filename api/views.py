@@ -35,11 +35,10 @@ def score(request):
 				if verify.verifier in fin: fin[verify.verifier] += 1
 				else: fin[verify.verifier] = 1
 	heap = []
-	print(heap)
+	print(fin)
 	heapq.heapify(heap)
 	for key, value in fin.items():
 		heapq.heappush(heap, (-1 * value, key))
-	fin = [(i[1], i[0]*-1)for i in heapq.nsmallest(10, heap)]
-	print(fin)
-	c = {'top_list':fin}
+	ret = [(i[1], i[0]*-1)for i in heapq.nsmallest(10, heap)]
+	c = {'top_list':ret}
 	return render(request, "score.html", c)
