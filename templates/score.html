@@ -4,9 +4,14 @@
 </head>
 
 <body>
-	<h1 style="padding-left: 5%; padding-top:2%"> Top 10 highest scorers </h1>
-	{% for l in top_list %}
-		<div>l</div>
-	{% endfor %}
+	<div class="container-fluid">
+		<h1 style="padding-top: 1%;padding-left: 1%"> Top 10 highest scorers </h1>
+		<div class="container">
+			<ol>
+				{% for l in top_list %}
+					<h4><li>{{l.0.name}} : {{l.1}}</li></h4>
+				{% endfor %}
+			</ol>
+	</div>
 </body>
 </html>

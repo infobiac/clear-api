@@ -25,24 +25,20 @@ def score(request):
 	for contract in contracts:
 		trues = 0
 		falses = 0
-		print(contract)
 		for verifier in contract.verify.all():
 			if verifier.verified: trues += 1
 			else: falses += 1
 		go = trues > falses
+		
 		for verify in contract.verify.all():
 			if verify.verified == go:
 				if verify.verifier in fin: fin[verify.verifier] += 1
+				else: fin[verify.verifier] = 1
 	heap = []
-	print(fin)
 	heapq.heapify(heap)
 	for key, value in fin.items():
-		heapq.push(heap, (-1 * value, key))
-	print(heap)
-	fin = []
-	while heap:
-		temp = heapq.pop(fin)
-		fin.append((temp[1], -1 * temp[0]))
+		heapq.heappush(heap, (-1 * value, key))
+	fin = [(i[1], i[0]*-1)for i in heapq.nsmallest(10, heap)]
 	print(fin)
-	c = {'l':fin}
+	c = {'top_list':fin}
 	return render(request, "score.html", c)
