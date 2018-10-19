@@ -12,7 +12,7 @@ class Verifier_ContractSerializer(serializers.HyperlinkedModelSerializer):
 		fields = ("verifier", "contract", "verified")
 
 class ContractSerializer(serializers.HyperlinkedModelSerializer):
-	verify = Verifier_ContractSerializer(many=True)
+	verify = Verifier_ContractSerializer(many=True, read_only=True)
 	class Meta:
 		model = Contract
 		fields = ('uuid', 'data', 'location', 'owner', 'verify', 'status')
