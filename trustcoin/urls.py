@@ -23,6 +23,7 @@ router = routers.DefaultRouter()
 router.register(r'users', views.PersonViewSet)
 
 router.register(r'contracts', views.ContractViewSet)
+router.register(r'verifier_contracts', views.VerifierContractViewSet)
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
