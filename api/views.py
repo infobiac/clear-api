@@ -35,6 +35,7 @@ def score(request):
 				if verify.verifier in fin: fin[verify.verifier] += 1
 				else: fin[verify.verifier] = 1
 	heap = []
+	print(heap)
 	heapq.heapify(heap)
 	for key, value in fin.items():
 		heapq.heappush(heap, (-1 * value, key))
