@@ -4,6 +4,7 @@ from rest_framework import viewsets
 from .serializers import PersonSerializer, ContractSerializer, Verifier_ContractSerializer
 from django.http import HttpResponse
 import heapq
+import random
 # Create your views here.
 
 class PersonViewSet(viewsets.ModelViewSet):
@@ -39,7 +40,7 @@ def score(request):
 	heap = []
 	heapq.heapify(heap)
 	for key, value in fin.items():
-		heapq.heappush(heap, (-1 * value, key))
-	ret = [(i[1], i[0]*-1)for i in heapq.nsmallest(10, heap)]
+		heapq.heappush(heap, (-1 * value, random.random(), key))
+	ret = [(i[2], i[0]*-1)for i in heapq.nsmallest(10, heap)]
 	c = {'top_list':ret}
 	return render(request, "score.html", c)
