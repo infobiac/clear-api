@@ -31,12 +31,9 @@ def score(request):
 			else: falses += 1
 		go = trues > falses
 		for verify in contract.verify.all():
-			print(verify.verified)
-			print(go)
 			if verify.verified == go:
 				if verify.verifier in fin: fin[verify.verifier] += 1
 				else: fin[verify.verifier] = 1
-	print("---"*10)
 	heap = []
 	heapq.heapify(heap)
 	for key, value in fin.items():
