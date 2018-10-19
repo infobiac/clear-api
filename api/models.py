@@ -14,8 +14,8 @@ class Contract(models.Model):
 	uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	data = models.TextField()
 	location = models.URLField(default=None, blank=True, null=True)
-	owner = models.ForeignKey(Person, on_delete=models.PROTECT, related_name="whom")
-	verifiers = models.ManyToManyField(Person, related_name="verifier")
+	owner = models.ForeignKey(Person, on_delete=models.PROTECT)
+	#verifiers = models.ManyToManyField(Person)
 	POSSIBLE_STATUSES = (
 		('COMPLETE', 'Complete'),
 		('PENDING', 'Pending'),
@@ -27,10 +27,10 @@ class Contract(models.Model):
 		return str(uuid)
 
 
-# class Verifier_Contract(models.Model):
-# 	verifier = models.ForeignKey(Person, on_delete=models.PROTECT)
-# 	contract = models.ForeignKey(Contract, on_delete=models.PROTECT)
-# 	verified = models.BooleanField(blank=True, null=True)
+class Verifier_Contract(models.Model):
+	verifier = models.ForeignKey(Person, on_delete=models.PROTECT)
+	contract = models.ForeignKey(Contract, on_delete=models.PROTECT, related_name="verify")
+	verified = models.BooleanField(blank=True, null=True)
 
-# 	def __unicode__(self):
-		return str(verifier)
+	def __unicode__(self):
+		return str()
