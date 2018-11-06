@@ -30,7 +30,8 @@ urlpatterns = [
     # path('admin/', admin.site.urls),
     # path('', lambda a : HttpResponse("Fuck off")),
     url(r'^', include(router.urls)),
-    path("score/", views.score)
+    path("score/", views.score),
+    path("score/pagerank", views.prscore),
     # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 
 ]
