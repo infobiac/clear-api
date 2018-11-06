@@ -7,6 +7,8 @@ import heapq
 import random
 import networkx as nx
 import pickle
+
+UUID_not_name = True
 # Create your views here.
 
 class PersonViewSet(viewsets.ModelViewSet):
@@ -65,7 +67,6 @@ def get_graph():
 		for v in falses:
 			for w in falses:
 				G.add_edge(v.uuid, w.uuid)
-	print(G)
 	return G
 
 
@@ -79,4 +80,8 @@ def prscore(request):
 	pr = nx.pagerank(graph)
 	print(pr)
 
-	return HttpResponse("HI")
+	fin = sorted([(val, key if UUID_not_name else Person.objects.get(uuid=key).name) for key, val in pr.items()])
+	print(fin)
+
+	return HttpResponse(fin)
+
