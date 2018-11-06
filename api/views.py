@@ -80,8 +80,14 @@ def prscore(request):
 	pr = nx.pagerank(graph)
 	print(pr)
 
-	fin = sorted([(val, key if UUID_not_name else Person.objects.get(uuid=key).name) for key, val in pr.items()])
+	fin = sorted([(val, key if UUID_not_name else Person.objects.get(uuid=key).name) for key, val in pr.items()], reverse = True)
 	print(fin)
+	num_to_display = 100
+	resp = "<h2> Page Rank Based Scoring: top {}</h2>".format(num_to_display)
+	count = 1
+	for i in fin[0:num_to_display]:
+		resp = "{} <p>{}. {}: {}</p>".format(resp, count, Person.objects.get(uuid=i[1]).name, i[0])
+		count += 1
 
-	return HttpResponse(fin)
+	return HttpResponse(resp)
 
