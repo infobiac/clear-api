@@ -54,6 +54,7 @@ class PendingContract(models.Model):
 	verification_type = models.CharField(max_length=8, choices=VERIFICATION_TYPES)
 	verifier = models.ForeignKey(Verifier, on_delete=models.CASCADE)
 	verifiee = models.ForeignKey(Verifiee, on_delete=models.CASCADE, blank=False, default="")
+	address = models.CharField(max_length=10000)
 
 class VerifieePendingContractForm(ModelForm):
 	class Meta:
@@ -69,5 +70,12 @@ class VerifieePendingContractForm(ModelForm):
 class VerifierPendingContractForm(ModelForm):
 	class Meta:
 		model = PendingContract
-		fields = ["linking_data", "verification_type", "status", "accepted"]
+		fields = ["verifiee", "linking_data", "verification_type"]
+		widgets = {
+			"linking_data": forms.Textarea(attrs={"class":"form-control", "disabled":"disabled"}),
+			"verification_type": forms.Select(attrs={"class":"form-control", "disabled":"disabled"}),
+			"verifier": forms.HiddenInput(attrs={"class":"form-control", "disabled":"disabled"}),
+			"verifiee": forms.Select(attrs={"class": "form-control", "disabled":"disabled"}),
+			# "accepted": forms.NullBooleanSelect(attrs={"class":"form-control", "disabled":"disabled"})
+		}
 

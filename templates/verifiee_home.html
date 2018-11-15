@@ -45,7 +45,9 @@
         {% endfor %}
         <br>
         <h2>Available Proofs</h2>
-        <div> {{pending.}}
+        {% for complete in completes %}
+          <div style="padding-bottom: 10px"><button class="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#{{complete.pk}}-Modal" role="button">{{complete.verifier.name}} approved {{complete.get_verification_type_display}}</button></div>
+        {% endfor %}
       </div>
     </main>
 

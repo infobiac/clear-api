@@ -13,10 +13,13 @@ def home(request):
 		if form.is_valid():
 			form.save()
 		return HttpResponseRedirect("/verifier/home")
-
-	form = VerifierPendingContractForm()
 	pendings = PendingContract.objects.filter(status=False)
-	c = {"form":form, "pendings":pendings}
+	completes = PendingContract.objects.filter(status=True)
+	forms = []
+	for pending in pendings:
+		form = VerifierPendingContractForm(instance=pending)
+		forms.append((pending.uuid, form))
+	c = {"forms":forms, "pendings":pendings, "completes":completes}
 	return render(request, "verifier_home.html", c)
 
 
@@ -41,3 +44,20 @@ def name_from_uuid(request):
 	except:
 		return HttpResponse("""No verifier under your current metamask wallet! 
 			Either register it, or select the right wallet and refresh""")
+
+
+def accept(request):
+	uuid = request.GET["id"]
+	contract = PendingContract.objects.get(uuid=uuid)
+	contract.status = True
+	contract.accepted = True
+	contract.save()
+	return HttpResponseRedirect("/verifier/home")
+
+def deny(request):
+	uuid = request.GET["id"]
+	contract = PendingContract.objects.get(uuid=uuid)
+	contract.status = True
+	contract.accepted = False
+	contract.save()
+	return HttpResponseRedirect("/verifier/home")

@@ -17,7 +17,8 @@ def home(request):
 
 	form = VerifieePendingContractForm()
 	pendings = PendingContract.objects.filter(status=False)
-	c = {"form":form, "pendings":pendings}
+	completes = PendingContract.objects.filter(status=True)
+	c = {"form":form, "pendings":pendings, "completes":completes}
 	return render(request, "verifiee_home.html", c)
 
 def register_address(request):

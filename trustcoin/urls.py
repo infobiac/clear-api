@@ -43,6 +43,8 @@ urlpatterns = [
     path("verifier/home", verifier.views.home),
     path("verifier/register", verifier.views.register_address),
     path("verifier/get_from_addr/", verifier.views.name_from_uuid),
+    path("verifier/deny", verifier.views.deny),
+    path("verifier/accept", verifier.views.accept),
     # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 
 ]

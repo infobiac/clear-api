@@ -38,16 +38,18 @@
       <div class="jumbotron" id="main">
         <h2>Ties to approve</h2>
         {% for pending in pendings %}
-          <div>{{pending.verifiee.name}} wants to tie {{pending.get_verification_type_display}}</div>
+          <div style="padding-bottom: 10px"><button class="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#{{pending.pk}}-Modal" role="button">{{pending.verifiee.name}} wants to tie {{pending.get_verification_type_display}}</button></div>
         {% endfor %}
         <br>
         <h2>Completed Proofs</h2>
-        <div> {{pending.}}
+        {% for complete in completes %}
+          <div style="padding-bottom: 10px"><button class="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#{{complete.pk}}-Modal" role="button">{{complete.verifiee.name}} proved {{complete.get_verification_type_display}}</button></div>
+        {% endfor %}
       </div>
     </main>
 
-
-	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+{% for form in forms %}
+	<div class="modal fade" id="{{form.0}}-Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
 	      <div class="modal-header">
@@ -58,16 +60,17 @@
 	      </div>
 	      <form method = "post" style="padding-left: 24px; padding-right: 24px; padding-top: 10px">
               {% csrf_token %}
-              {{ form.as_p }}
+              {{ form.1.as_p }}
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-		        <input type="submit" class="btn btn-primary" value="Go!"> 
+            <a href="/verifier/deny?id={{form.0}}" type="button" class="btn btn-danger">Deny</a> 
+            <a href="/verifier/accept?id={{form.0}}" type="button" class="btn btn-primary">Accept</a> 
 		      </div>
 		   </form>
 	    </div>
 	  </div>
 	</div>
-
+{% endfor %}
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -107,7 +110,6 @@
         })
 
         // APP >
-
         web3.eth.getAccounts(function(error, accounts) {
           if (!error) {
             web3.eth.getBalance(accounts[0], function(error, balance) {
