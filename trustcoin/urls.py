@@ -19,6 +19,8 @@ from rest_framework import routers
 from django.contrib import admin
 from django.http import HttpResponse
 from api import views
+import verifiee.views
+import verifier.views
 
 router = routers.DefaultRouter()
 router.register(r'users', views.PersonViewSet)
@@ -27,11 +29,20 @@ router.register(r'contracts', views.ContractViewSet)
 router.register(r'verifier_contracts', views.VerifierContractViewSet)
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
     # path('', lambda a : HttpResponse("Fuck off")),
     url(r'^', include(router.urls)),
     path("score/", views.score),
     path("score/pagerank", views.prscore),
+    path("create/", views.create_new_contract),
+    path("metatest/", views.metatest),
+    path("verifiee/home", verifiee.views.home),
+    path("verifiee/register", verifiee.views.register_address),
+    path("verifiee/get_from_addr/", verifiee.views.name_from_uuid),
+
+    path("verifier/home", verifier.views.home),
+    path("verifier/register", verifier.views.register_address),
+    path("verifier/get_from_addr/", verifier.views.name_from_uuid),
     # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 
 ]

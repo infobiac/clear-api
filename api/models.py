@@ -1,6 +1,10 @@
 from django.db import models
 import uuid
-
+from verifier.models import Verifier
+from verifiee.models import Verifiee
+import verifiee.models
+from django.forms import ModelForm
+from django import forms
 # Create your models here.
 
 class Person(models.Model):
@@ -34,3 +38,36 @@ class Verifier_Contract(models.Model):
 
 	def __unicode__(self):
 		return str()
+
+class PendingContract(models.Model):
+	uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+	status = models.BooleanField(blank=True, null=True, default=False)
+	linking_data = models.TextField()
+	accepted = models.BooleanField(blank=True, null=True)
+	VERIFICATION_TYPES = (
+		('DEGREE', 'Education'),
+		('SSN', 'Social Security Number'),
+		('CREDIT','Credit Score'),
+		('ADDRESS','Address'),
+		('BIRTHDAY','Birthday'),
+		)
+	verification_type = models.CharField(max_length=8, choices=VERIFICATION_TYPES)
+	verifier = models.ForeignKey(Verifier, on_delete=models.CASCADE)
+	verifiee = models.ForeignKey(Verifiee, on_delete=models.CASCADE, blank=False, default="")
+
+class VerifieePendingContractForm(ModelForm):
+	class Meta:
+		model = PendingContract
+		fields = ["linking_data", "verification_type", "verifier", "verifiee"]
+		widgets = {
+			"linking_data": forms.Textarea(attrs={"class":"form-control"}),
+			"verification_type": forms.Select(attrs={"class":"form-control"}),
+			"verifier": forms.Select(attrs={"class":"form-control"}),
+			"verifiee": forms.HiddenInput(attrs={"class": "form-control"}),
+		}
+
+class VerifierPendingContractForm(ModelForm):
+	class Meta:
+		model = PendingContract
+		fields = ["linking_data", "verification_type", "status", "accepted"]
+

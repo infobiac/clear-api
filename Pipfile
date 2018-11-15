@@ -13,5 +13,7 @@ gunicorn = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
 networkx = "*"
+vyper = "*"
+"web3" = "*"
 
 [dev-packages]

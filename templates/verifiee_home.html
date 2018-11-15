@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Material Design for Bootstrap fonts and icons -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+
+    <!-- Material Design for Bootstrap CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+
+    <title>Clarity: For user</title>
+  </head>
+  <body>
+    
+  <body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+      <img src="https://clarity.ilovecornelltech.com/assets/logo.png" class="navbar-brand" href="#" style="width:100px"></img>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <div class="nav-link" style="color: white"> For users </div>
+          </li>
+          <li class="nav-item">
+            <div class="nav-link" style="color: white"> Logged in as: <div id="curr_user"></div> </div>
+          </li>
+        </ul>
+        <div class="form-inline mt-2 mt-md-0">
+          <button class="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#exampleModal" role="button"> Request new tie &raquo;</button>
+        </div>
+      </div>
+    </nav>
+
+    <main role="main" class="container">
+      <div class="jumbotron" id="main">
+        <h2>Pending ties</h2>
+        {% for pending in pendings %}
+          <div>Your {{pending.get_verification_type_display}} is being tied to {{pending.verifier.name}}</div>
+        {% endfor %}
+        <br>
+        <h2>Available Proofs</h2>
+        <div> {{pending.}}
+      </div>
+    </main>
+
+
+	<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="exampleModalLabel">Request new tie</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <form method = "post" style="padding-left: 24px; padding-right: 24px; padding-top: 10px">
+              {% csrf_token %}
+              {{ form.as_p }}
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		        <input type="submit" class="btn btn-primary" value="Go!"> 
+		      </div>
+		   </form>
+	    </div>
+	  </div>
+	</div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+    <script>$(document).ready(function() { $('body').bootstrapMaterialDesign(); });</script>
+    <script>
+      window.addEventListener("load", function() {
+        // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+        if (typeof web3 !== "undefined") {
+          // Use Mist/MetaMask's provider
+          window.web3 = new Web3(web3.currentProvider);
+        } else {
+          console.log("No web3? You should consider trying MetaMask!");
+          // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+          window.web3 = new Web3(
+            new Web3.providers.HttpProvider("https://localhost:8545")
+          );
+        }
+       web3.eth.getAccounts(function(error, accounts) {
+          var user_info_request = $.post("/verifiee/get_from_addr/", {addr:accounts[0]}).done(function(){
+            var user_info = user_info_request["responseJSON"];
+            if(user_info==null){
+              $("#main").text("");
+              alert("No account registered as verifier with that address! Are you sure your metamask is signed in to the right wallet?");
+            };
+            $("#curr_user").text(user_info["name"]);
+            $("#id_verifiee").val(user_info["uuid"]);
+            // $("#id_verifiee").prop("disabled", true);
+            $("#id_verifiee option[value="+user_info["uuid"]+"]").attr('selected', 'selected');
+            // $("id_verifee option[value='']").removeAttr('selected');
+            // $("#id_verifiee").change();
+          })
+          
+        })
+
+        // APP >
+
+        web3.eth.getAccounts(function(error, accounts) {
+          if (!error) {
+            web3.eth.getBalance(accounts[0], function(error, balance) {
+              $("#curr_wall").text(accounts[0]);
+              // web3.eth.sendTransaction({
+              //     from: accounts[0],
+              //     to: "0x0C39850CCa8181bA80311F559023672Ef3aF1D82", // deploying a contracrt
+              //     value: '10000000000000000'
+              // }, function(error, hash){
+              //     console.log(hash);
+              // });
+              // if (!error) {
+              //   console.log(
+              //     "Your account: " +
+              //       accounts[0] +
+              //       " has a balance of: " +
+              //       balance.toNumber() / 1000000000000000000 +
+              //       "Ether"
+              //   );
+              // } else {
+              //   console.error(error);
+              // }
+
+            });
+          } else {
+            console.error(error);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

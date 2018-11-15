@@ -1,0 +1,58 @@
+<html>
+<body>
+  <p>Amount:<input type="text" id="amt"></p>
+  <p>Address to send to: <input type="text" id="to_addr"></p>
+  <button onclick="trig()"> Send Tx </button></body>
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
+<script>
+
+
+  window.addEventListener("load", function() {
+    // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+    if (typeof web3 !== "undefined") {
+      // Use Mist/MetaMask's provider
+      window.web3 = new Web3(web3.currentProvider);
+    } else {
+      console.log("No web3? You should consider trying MetaMask!");
+      // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+    }
+
+    // APP >
+  });
+
+  function trig(){
+    console.log("HI");
+    web3.eth.getAccounts(function(error, accounts) {
+      if (!error) {
+        web3.eth.getBalance(accounts[0], function(error, balance) {
+          console.log(balance.toNumber())
+          web3.eth.sendTransaction({
+              from: accounts[0],
+              to: $("#to_addr").val(), // deploying a contracrt
+              value: $("#amt").val(),
+          }, function(error, hash){
+              console.log(hash);
+          });
+          //Amt: '100000000000000'
+          //To: "0x0C39850CCa8181bA80311F559023672Ef3aF1D82"
+          // if (!error) {
+          //   console.log(
+          //     "Your account: " +
+          //       accounts[0] +
+          //       " has a balance of: " +
+          //       balance.toNumber() / 1000000000000000000 +
+          //       "Ether"
+          //   );
+          // } else {
+          //   console.error(error);
+          // }
+        });
+      } else {
+        console.error(error);
+      }
+    });
+  }
+</script>
+</html>

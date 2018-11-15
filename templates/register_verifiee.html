@@ -1,0 +1,43 @@
+<html>
+<body>
+  <form method="post">
+    {% csrf_token %}
+    <p>Address to Register:<input type="text" id="addr" name="addr" style="width:300px" readonly></p>
+    <p>User account: <select name="usr" required> {% for v in vs %} <option value="{{v.uuid}}"> {{v.name}} </option>{% endfor %}</select> </p>
+    <input type="submit" class="btn btn-primary" value="Go!"> 
+  </form>
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
+<script>
+
+
+  window.addEventListener("load", function() {
+    // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+    if (typeof web3 !== "undefined") {
+      // Use Mist/MetaMask's provider
+      window.web3 = new Web3(web3.currentProvider);
+    } else {
+      console.log("No web3? You should consider trying MetaMask!");
+      // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+      window.web3 = new Web3(
+        new Web3.providers.HttpProvider("https://localhost:8545")
+      );
+    }
+
+    web3.eth.getAccounts(function(error, accounts) {
+      if (!error) {
+        web3.eth.getBalance(accounts[0], function(error, balance) {
+          console.log(balance.toNumber())
+          $("#addr").val(accounts[0]);
+        });
+      } else {
+        console.error(error);
+      }
+    });
+
+    // APP >
+  });
+
+</script>
+</html>

@@ -50,7 +50,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'django.contrib.staticfiles',
-    'corsheaders'
+    'corsheaders',
+    'verifier',
+    'verifiee',
+    'seeker'
 ]
 
 
