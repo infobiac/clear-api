@@ -30,6 +30,7 @@ router.register(r'contracts', views.ContractViewSet)
 router.register(r'verifier_contracts', views.VerifierContractViewSet)
 
 urlpatterns = [
+    path('', views.landing),
     path('admin/', admin.site.urls),
     # path('', lambda a : HttpResponse("Fuck off")),
     url(r'^', include(router.urls)),
