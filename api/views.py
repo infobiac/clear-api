@@ -26,6 +26,9 @@ class VerifierContractViewSet(viewsets.ModelViewSet):
 	queryset = Verifier_Contract.objects.all()
 	serializer_class = Verifier_ContractSerializer
 
+def landing(request):
+	return render(request,"landing.html")
+
 
 def score(request):
 	contracts = Contract.objects.all()
