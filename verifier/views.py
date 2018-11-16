@@ -65,6 +65,7 @@ def deny(request):
 
 @csrf_exempt
 def expose_data(request):
-	contract_addr = request.POST["addr"]
-	contract = PendingContract.objects.get(addr=contract_addr)
+	contract_addr = request.GET["addr"]
+	print(contract_addr)
+	contract = PendingContract.objects.get(address=contract_addr)
 	return JsonResponse({"data":contract.linking_data})

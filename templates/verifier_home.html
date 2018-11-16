@@ -10,7 +10,7 @@
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <div class="nav-link"> For Verifiers </div>
+            <div class="nav-link"> <h4> For Verifiers </h4> </div>
           </li>
           <li class="nav-item">
             <div class="nav-link"> Logged in as: <div id="curr_user"></div> </div>
@@ -81,9 +81,9 @@
               alert("No account registered as verifier with that address! Are you sure your metamask is signed in to the right wallet?");
             };
             $("#curr_user").text(user_info["name"]);
-            $("#id_verifiee").val(user_info["uuid"]);
+            // $("#id_verifiee").val(user_info["uuid"]);
             // $("#id_verifiee").prop("disabled", true);
-            $("#id_verifiee option[value="+user_info["uuid"]+"]").attr('selected', 'selected');
+            // $("#id_verifiee option[value="+user_info["uuid"]+"]").attr('selected', 'selected');
             // $("id_verifee option[value='']").removeAttr('selected');
             // $("#id_verifiee").change();
           })

@@ -29,6 +29,7 @@
         {% endfor %}
         <br>
         <h2>Finished Confirmations</h2>
+        <div id="finished-confs"></div>
         {% for complete in completes %}
           <div style="padding-bottom: 10px"><button class="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#{{complete.pk}}-Modal" role="button">{{complete.verifier.name}} approved {{complete.get_verification_type_display}}</button></div>
         {% endfor %}
@@ -58,30 +59,33 @@
 	</div>
 
 
-  {% for complete in completes %}
-    <div class="modal fade" id="{{complete.pk}}-Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Associated Contract Address</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <br>
-          <div id="qr-code-{{complete.uuid}}" style="margin-left: auto; margin-right: auto; padding-top: 10px"></div>
-          <div style="text-align: center"> {{complete.address}}</div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          </div>
+  <div class="modal fade" id="data-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Contract Data</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="data-container" class="container"></div>      
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
-  {% endfor %}
+  </div>
 {% endblock %}
 
 {% block extrascripts %}
     <script>
+
+      function data_trig(addr){
+        data = $.get("/verifier/expose?"+"addr="+addr).done(function(){
+          console.log(data);
+          $("#data-container").text(data["responseJSON"]["data"]);
+        })
+      }
       window.addEventListener("load", function() {
         // Checking if Web3 has been injected by the browser (Mist/MetaMask)
         if (typeof web3 !== "undefined") {
@@ -107,9 +111,23 @@
             $("#id_verifiee option[value="+user_info["uuid"]+"]").attr('selected', 'selected');
             // $("id_verifee option[value='']").removeAttr('selected');
             // $("#id_verifiee").change();
+          });
+          var eth_scan = $.get("http://api-kovan.etherscan.io/api?module=account&action=txlist&address=" + accounts[0]+ "&startblock=0&endblock=99999999&sort=desc&apikey=UMQEFCHCW7BSWY62U596G5ZYX2CZHF5SKN/").done(function(){
+            resp = eth_scan["responseJSON"]["result"];
+            let MyContract = web3.eth.contract(contract_abi);
+            web3.eth.defaultAccount = web3.eth.accounts[0];
+            MyContract.defaultAccount = web3.eth.accounts[0];
+            for(var i=0; i < resp.length; i++){
+              // var contractInstance = MyContract.at(resp[i]["to"]);
+              $("#finished-confs").append("<div style='padding-top:10px'><button onclick='data_trig(\""+resp[i]["to"].toString(16)+"\")' class='btn btn-outline-success my-2 my-sm-0' data-toggle='modal' data-target='#data-modal' role='button'>"+resp[i]["to"]+"</button></div>");
+              // contractInstance.check_access(accounts[0], function(error, data){
+              //   console.log(data);
+              // });
+
+
+            }
           })
-          
-        })
+        });
 
         // APP >
 

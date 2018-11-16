@@ -96,6 +96,9 @@ def prscore(request):
 		count += 1
 
 	return HttpResponse(resp)
+
+# def get_contract(request):
+
 # class Safe:    
 #     value = public(wei_value()) #Value of the item
 #     seller = public(address())
