@@ -15,8 +15,5 @@ django-cors-headers = "*"
 networkx = "*"
 vyper = "*"
 "web3" = "*"
-libsass = "*"
-django-compressor = "*"
-django-sass-processor = "*"
 
 [dev-packages]
