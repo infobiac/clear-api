@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %} Clarity: For users {% endblock %}
+{% block title %} Clarity: For seekers {% endblock %}
 {% block content %}
     <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
       <img src="https://clarity.ilovecornelltech.com/assets/logo.png" class="navbar-brand" href="#" style="width:100px"></img>
@@ -9,28 +9,26 @@
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <div class="nav-link" style="color: white"> For users </div>
+            <div class="nav-link" style="color: white"> For seekers </div>
           </li>
           <li class="nav-item">
             <div class="nav-link" style="color: white"> Logged in as: <div id="curr_user"></div> </div>
           </li>
         </ul>
         <div class="form-inline mt-2 mt-md-0">
-          <button class="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#exampleModal" role="button"> Request new tie &raquo;</button>
+          <a href="/seeker/scan/" class="btn btn-outline-success my-2 my-sm-0"> Request new confirmation &raquo;</a>
         </div>
       </div>
     </nav>
 
     <main role="main" class="container">
       <div class="jumbotron" id="main">
-        <h2> Pending Requests </h2>
-        <div id="pending-reqs"></div>
-        <h2>Pending ties</h2>
+        <h2>Pending Confirmations</h2>
         {% for pending in pendings %}
-          <div>Your {{pending.get_verification_type_display}} is being tied to {{pending.verifier.name}}</div>
+          <div>Waiting on {{pending.verifiee.name}}</div>
         {% endfor %}
         <br>
-        <h2>Available Proofs</h2>
+        <h2>Finished Confirmations</h2>
         {% for complete in completes %}
           <div style="padding-bottom: 10px"><button class="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#{{complete.pk}}-Modal" role="button">{{complete.verifier.name}} approved {{complete.get_verification_type_display}}</button></div>
         {% endfor %}
@@ -42,7 +40,7 @@
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
 	      <div class="modal-header">
-	        <h5 class="modal-title" id="exampleModalLabel">Request new tie</h5>
+	        <h5 class="modal-title" id="exampleModalLabel">Request new Confirmation</h5>
 	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 	          <span aria-hidden="true">&times;</span>
 	        </button>
@@ -97,11 +95,11 @@
           );
         }
        web3.eth.getAccounts(function(error, accounts) {
-          var user_info_request = $.post("/verifiee/get_from_addr/", {addr:accounts[0]}).done(function(){
+          var user_info_request = $.post("/seeker/get_from_addr/", {addr:accounts[0]}).done(function(){
             var user_info = user_info_request["responseJSON"];
             if(user_info==null){
               $("#main").text("");
-              alert("No account registered as verifier with that address! Are you sure your metamask is signed in to the right wallet?");
+              alert("No account registered as seeker with that address! Are you sure your metamask is signed in to the right wallet?");
             };
             $("#curr_user").text(user_info["name"]);
             $("#id_verifiee").val(user_info["uuid"]);
@@ -128,40 +126,9 @@
     </script>
   <script src="/static/qrcode.min.js"></script>
   <script>
-    let MyContract = web3.eth.contract(contract_abi);
-    web3.eth.defaultAccount = web3.eth.accounts[0];
-    MyContract.defaultAccount = web3.eth.accounts[0];
-
-
-    function approve(seeker_addr, contract_addr){
-      var contractInstance = MyContract.at(contract_addr);
-      addr = "0x" + seeker_addr;
-      console.log(addr);
-      contractInstance.grant_access(addr, function(err, data){
-        console.log("Done!");
-      });
-    }
     {% for complete in completes %}
       new QRCode(document.getElementById("qr-code-{{complete.uuid}}"), "{{complete.address}}");
     {% endfor %}
-
-    {% for all in alls %}
-      if("{{all.address}}" != "YOOOO"){
-        // console.log("{{all.address}}");
-        var contractInstance = MyContract.at("{{all.address}}");
-        contractInstance.getpending(function(err, data){
-          if(data){
-            for(var i=0; i < data.length; i++){
-              var user_info_request = $.post("/seeker/get_from_addr/", {addr:data[i]}).done(function(){
-                var user_info = user_info_request["responseJSON"]["name"];
-                var user_uuid = user_info_request["responseJSON"]["addr"];
-                $("#pending-reqs").append(user_info + " is requesting your " + "{{all.get_verification_type_display}}, <button class='btn btn-outline-success my-2 my-sm-0' onclick=\"approve(\'"+user_uuid+"\', \'{{all.address}}\')\"> Approve </button> or <button class='btn btn-outline-danger my-2 my-sm-0'> Dissapprove </button> ");
-              });
-            }
-          }
-        })
-      }
-      // contractInstance.request_access(function(err, data){console.log(data); console.log(err)})
-    {% endfor %}
   </script>
+
 {% endblock %}

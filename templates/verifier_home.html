@@ -34,7 +34,7 @@
     </main>
 
 {% for form in forms %}
-	<div class="modal fade" id="{{form.0}}-Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal fade" id="{{form.0.uuid}}-Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	  <div class="modal-dialog" role="document">
 	    <div class="modal-content">
 	      <div class="modal-header">
@@ -48,8 +48,8 @@
               {{ form.1.as_p }}
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <a href="/verifier/deny?id={{form.0}}" type="button" class="btn btn-danger">Deny</a> 
-            <a href="/verifier/accept?id={{form.0}}" type="button" class="btn btn-primary">Accept</a> 
+            <a href="/verifier/deny?id={{form.0.uuid}}" type="button" class="btn btn-danger">Deny</a> 
+            <button type="button" class="btn btn-primary" onclick="create_contract('{{form.0.verifiee.uuid}}', '{{form.0.uuid}}')">Accept</button> 
 		      </div>
 		   </form>
 	    </div>
@@ -69,7 +69,7 @@
           console.log("No web3? You should consider trying MetaMask!");
           // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
           window.web3 = new Web3(
-            new Web3.providers.HttpProvider("https://localhost:8545")
+            new Web3.providers.HttpProvider("http://localhost:7545")
           );
         }
        web3.eth.getAccounts(function(error, accounts) {
@@ -87,7 +87,10 @@
             // $("id_verifee option[value='']").removeAttr('selected');
             // $("#id_verifiee").change();
           })
+          // var test_contract = new web3.eth.Contract(, {from:accounts[0], gasPrice:10000000000, gasLimit:1000000000000, data:contract_bytecode["object"]});
+          // test_contract.deploy()
         })
+
 
         // APP >
         web3.eth.getAccounts(function(error, accounts) {
@@ -101,5 +104,44 @@
           }
         });
       });
+      var saved_var = "";
+      function create_contract(user, uuid){
+        web3.eth.getAccounts(function(error, accounts) {
+          var user_info_request = $.post("/verifiee/get_from_uuid/", {uuid:user}).done(function(){
+            var user_info = user_info_request["responseJSON"]["addr"];
+            let MyContract = web3.eth.contract(contract_abi);
+            console.log(user_info);
+            var myContractReturned = MyContract.new("test", user_info, "test2", {
+              from:accounts[0],
+              data:contract_bytecode["object"],
+              gas:8000000}, function(err, myContract){
+               if(!err) {
+                  // NOTE: The callback will fire twice!
+                  // Once the contract has the transactionHash property set and once its deployed on an address.
+                   // e.g. check tx hash on the first call (transaction send)
+                   window.onbeforeunload = function (e) {
+                    return 'Are you sure?';
+                  };
+                  if(!myContract.address) {
+                      console.log(myContract.transactionHash) // The hash of the transaction, which deploys the contract
+                      $('.modal').modal('hide');
+                      alert("Contract created! Webpage will reload automatically on completion.");
+                  
+                  // check address on the second call (contract deployed)
+                  } else {
+                      var fin_addr = myContract.address; // the contract address
+                      window.onbeforeunload = function () {
+                        // blank function do nothing
+                      }
+                      window.location="/verifier/accept?id="+uuid+"&address="+fin_addr;
+                  }
+                   // Note that the returned "myContractReturned" === "myContract",
+                  // so the returned "myContractReturned" object will also get the address set.
+               }
+             });
+            saved_var = myContractReturned;
+          });
+          });
+       }
     </script>
 {% endblock %}

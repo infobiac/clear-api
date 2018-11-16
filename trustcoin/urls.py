@@ -21,6 +21,7 @@ from django.http import HttpResponse
 from api import views
 import verifiee.views
 import verifier.views
+import seeker.views
 
 router = routers.DefaultRouter()
 router.register(r'users', views.PersonViewSet)
@@ -39,6 +40,7 @@ urlpatterns = [
     path("verifiee/home", verifiee.views.home),
     path("verifiee/register", verifiee.views.register_address),
     path("verifiee/get_from_addr/", verifiee.views.name_from_uuid),
+    path("verifiee/get_from_uuid/", verifiee.views.addr_from_uuid),
 
     path("verifier/home", verifier.views.home),
     path("verifier/register", verifier.views.register_address),
@@ -46,5 +48,11 @@ urlpatterns = [
     path("verifier/deny", verifier.views.deny),
     path("verifier/accept", verifier.views.accept),
     # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+
+    path("seeker/home", seeker.views.home),
+    path("seeker/register", seeker.views.register_address),
+    path("seeker/get_from_addr/", seeker.views.name_from_uuid),
+    path("seeker/scan/", seeker.views.scanning_page),
+
 
 ]

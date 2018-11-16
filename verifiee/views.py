@@ -18,7 +18,8 @@ def home(request):
 	form = VerifieePendingContractForm()
 	pendings = PendingContract.objects.filter(status=False)
 	completes = PendingContract.objects.filter(status=True)
-	c = {"form":form, "pendings":pendings, "completes":completes}
+	alls = PendingContract.objects.all()
+	c = {"form":form, "pendings":pendings, "completes":completes, "alls":alls}
 	return render(request, "verifiee_home.html", c)
 
 def register_address(request):
@@ -41,3 +42,13 @@ def name_from_uuid(request):
 		return JsonResponse(ret)
 	except:
 		return HttpResponseRedirect("../register")
+
+@csrf_exempt
+def addr_from_uuid(request):
+	uuid = request.POST["uuid"]
+	usr = Verifiee.objects.get(uuid=uuid)
+	va = usr.verifiee_address_set.all()[0]
+	ret = {"addr":va.address}
+	return JsonResponse(ret)
+
+

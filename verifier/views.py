@@ -18,7 +18,7 @@ def home(request):
 	forms = []
 	for pending in pendings:
 		form = VerifierPendingContractForm(instance=pending)
-		forms.append((pending.uuid, form))
+		forms.append((pending, form))
 	c = {"forms":forms, "pendings":pendings, "completes":completes}
 	return render(request, "verifier_home.html", c)
 
@@ -51,6 +51,7 @@ def accept(request):
 	contract = PendingContract.objects.get(uuid=uuid)
 	contract.status = True
 	contract.accepted = True
+	contract.address=request.GET["address"]
 	contract.save()
 	return HttpResponseRedirect("/verifier/home")
 
@@ -61,3 +62,9 @@ def deny(request):
 	contract.accepted = False
 	contract.save()
 	return HttpResponseRedirect("/verifier/home")
+
+@csrf_exempt
+def expose_data(request):
+	contract_addr = request.POST["addr"]
+	contract = PendingContract.objects.get(addr=contract_addr)
+	return JsonResponse({"data":contract.linking_data})
