@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'verifier',
     'verifiee',
-    'seeker'
+    'seeker',
+    'sass_processor',
 ]
 
 
