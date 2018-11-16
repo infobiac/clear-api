@@ -11,18 +11,23 @@
     <!-- Material Design for Bootstrap CSS -->
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
     <link rel="stylesheet" href="/static/main.css">
+    <link rel="stylesheet" href="/static/landing.css">
     {% block extraheaders %} {% endblock %}
     <title>{% block title %} {% endblock %}</title>
   </head>
   <body>
-    <div class="container">
-      <div class="row">
-        <div class="col">
-          <div class="jumbotron">
-            <h1>Hello World!</h1>
-          </div>
-        </div>
-      </div>
+
+    <!-- The video -->
+    {% load static %}
+    <video autoplay="true" muted="true" loop class="video">
+      <source src="{% static "hero.mp4" %}" type="video/mp4">
+    </video>
+
+    <!-- Optional: some overlay text to describe the video -->
+    <div class="content">
+      <h1>You are the verifier</h1>
+      <p>With our powerful decentralized distributed ledger, take back what belongs to you.
+      <strong> Verify. Attest. Trust.</strong> Welcome to the future of identification.</p>
     </div>
 
     <!-- Optional JavaScript -->
